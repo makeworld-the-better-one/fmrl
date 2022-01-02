@@ -28,6 +28,7 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
     - [Batch Query](#batch-query)
     - [Delta Query](#delta-query)
     - [Authentication](#authentication)
+    - [Errors](#errors)
     - [Set Status Field(s)](#set-status-fields)
     - [Set Avatar](#set-avatar)
 
@@ -226,6 +227,21 @@ Servers MUST return status code 401 for requests that require authentication but
 
 Creating an account is handled by each server independently and is not defined here. Servers SHOULD allow users to change their password by proving they have access to another service, like email. This helps keep their account secure if their password is leaked.
 
+### Errors
+
+PUT requests (defined below) change the user's status, and have the potential for errors, on the client or server side.
+
+The server MUST return 200 OK if the request data was set successfully. If there was an error with the client request body, the server MUST return 400. A server error MUST cause 500 to be returned.
+
+In the case of either error, plain text (UTF-8) must be returned that gives a brief explanation of the error. For example:
+
+```
+Image not recognized as JPEG or PNG.
+```
+
+The client SHOULD then display this error to the user, indicating that the status update failed. Clients shouldn't expect the error description to be only one line long.
+
+
 ### Set Status Field(s)
 
 This request sets one or more fields of the status. It is a PUT request. The body of the request is a JSON document of the same schema as the status. The server MUST replace any fields of the user's status with the fields included in the request body. Any fields not included in the request body MUST remain the same. Any fields in the request body that the server doesn't recognize MUST be ignored, instead of being set in the JSON.
@@ -257,11 +273,3 @@ http://example.com/fmrl/users/bob/avatar
 ```
 
 The body of the PUT request MUST be either a JPEG or PNG image.
-
-The server MUST return 200 OK if the avatar was set successfully. If there was an error with the client request body, the server MUST return 400. A server error MUST cause 500 to be returned.
-
-In the case of either error, plain text (UTF-8) must be returned that gives a brief explanation of the error. For example:
-
-```
-Image not recognized as JPEG or PNG.
-```
