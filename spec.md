@@ -180,7 +180,7 @@ Clients SHOULD include `If-Modified-Since` with every request where the the prev
 If the server is hosted at `example.com`, the URL to get the status of a the user `bob` looks like
 
 ```
-http://example.com/frml/users/bob
+http://example.com/fmrl/users/bob
 ```
 
 Only a GET request is valid.
@@ -192,7 +192,7 @@ A batch query returns data for multiple users.
 The client makes a GET request that looks like this:
 
 ```
-http://example.com/frml/users?user=username1&user=username2
+http://example.com/fmrl/users?user=username1&user=username2
 ```
 
 
@@ -212,7 +212,7 @@ A delta query returns data for multiple users, but only the users that have new 
 The GET request looks like:
 
 ```
-http://example.com/frml/new?user=username1&user=username2
+http://example.com/fmrl/new?user=username1&user=username2
 ```
 
 And the response is the same layout as [§Batch Query](#batch-query).
@@ -235,7 +235,7 @@ An empty JSON document like `{}` is valid, but of course will do nothing.
 If the server is hosted at `example.com`, the URL to set the status of a the user `bob` looks like
 
 ```
-http://example.com/frml/users/bob
+http://example.com/fmrl/users/bob
 ```
 
 To change the `status` of Bob, the PUT body would look like:
@@ -253,7 +253,7 @@ The only field this doesn't apply to is the `avatar` field. Servers MUST reject 
 To set the avatar for bob, the client makes a PUT request to the following URL:
 
 ```
-http://example.com/frml/users/bob/avatar
+http://example.com/fmrl/users/bob/avatar
 ```
 
 The body of the PUT request MUST be either a JPEG or PNG image.
