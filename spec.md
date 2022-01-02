@@ -26,10 +26,10 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
     - [Headers](#headers)
     - [Single User Query](#single-user-query)
     - [Batch Query](#batch-query)
-  - [Delta Query](#delta-query)
-  - [Authentication](#authentication)
-  - [Set Status Field(s)](#set-status-fields)
-  - [Set Avatar](#set-avatar)
+    - [Delta Query](#delta-query)
+    - [Authentication](#authentication)
+    - [Set Status Field(s)](#set-status-fields)
+    - [Set Avatar](#set-avatar)
 
 
 ## Preamble
@@ -205,7 +205,7 @@ The server returns the schema described in [§User data](#user-data), but multip
 ]
 ```
 
-## Delta Query
+### Delta Query
 
 A delta query returns data for multiple users, but only the users that have new data. The client MUST make the request with an `If-Modified-Since` header, and the server MUST only return data for users that have been updated since the time in that header.
 
@@ -218,7 +218,7 @@ http://example.com/fmrl/new?user=username1&user=username2
 And the response is the same layout as [§Batch Query](#batch-query).
 
 
-## Authentication
+### Authentication
 
 APIs that allow updating your status on your server must be protected with authentication. To keep things simple, [basic authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization#basic_authentication) is used for each request that changes a user's status data.
 
@@ -226,7 +226,7 @@ Servers MUST return status code 401 for requests that require authentication but
 
 Creating an account is handled by each server independently and is not defined here. Servers SHOULD allow users to change their password by proving they have access to another service, like email. This helps keep their account secure if their password is leaked.
 
-## Set Status Field(s)
+### Set Status Field(s)
 
 This request sets one or more fields of the status. It is a PUT request. The body of the request is a JSON document of the same schema as the status. The server MUST replace any fields of the user's status with the fields included in the request body. Any fields not included in the request body MUST remain the same. Any fields in the request body that the server doesn't recognize MUST be ignored, instead of being set in the JSON.
 
@@ -248,7 +248,7 @@ To change the `status` of Bob, the PUT body would look like:
 
 The only field this doesn't apply to is the `avatar` field. Servers MUST reject requests that try to set the `avatar` field, and clients MUST NOT send them. This is because there's no way to upload the avatar with this kind of request.
 
-## Set Avatar
+### Set Avatar
 
 To set the avatar for bob, the client makes a PUT request to the following URL:
 
