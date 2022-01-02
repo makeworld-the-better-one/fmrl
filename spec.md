@@ -1,6 +1,6 @@
 # Specification
 
-v0.1.0, December 2021
+v0.0.0, December 2021
 
 **This is a draft version of the spec, and is subject to change.**
 
@@ -82,7 +82,7 @@ In lieu of a proper JSON schema, here is an example layout of the data, with eve
 
 Any fields that do not appear here have an undefined meaning and purpose and SHOULD be ignored by clients.
 
-Missing fields are equivalent to the zero/empty value for the field. For example, having no `"status"` field is equivalent to `"status": ""`.
+Missing fields are equivalent to the zero/empty value for the field. For example, having no `"status"` field is equivalent to `"status": ""`. The same goes for the JSON `null` value, it is equivalent to an empty string, or number zero, etc.
 
 All fields are optional.
 
