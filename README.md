@@ -39,3 +39,8 @@ A: The main difference is that the data is structured, while finger data is just
 A: No. I'm hoping to create something fun, that some people would use and get a kick out of.
 
 Maybe this is something that the [Mastodon](https://joinmastodon.org/) crowd will use, people who are already willing to try something new and understand the merits of decentralization. Some sort of integration like a Mastdon+fmrl client would be really cool.
+
+
+## Discussion
+
+To propose updates to the spec, please use GitHub issues. For general discussion and questions, join us on IRC at `#fmrl` on libera.chat. Or `#fmrl:libera.chat` for [Matrix](https://matrix.org/) users.
