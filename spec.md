@@ -31,6 +31,7 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
     - [Errors](#errors)
     - [Set Status Field(s)](#set-status-fields)
     - [Set Avatar](#set-avatar)
+  - [Client Status Storage](#client-status-storage)
 
 
 ## Preamble
@@ -273,3 +274,10 @@ http://example.com/fmrl/user/bob/avatar
 ```
 
 The body of the PUT request MUST be either a JPEG or PNG image.
+
+
+## Client Status Storage
+
+Clients SHOULD NOT retain statuses in long term storage. For example, no statuses should be available immediately after opening a GUI desktop client. The client would need to request statuses from the servers again. This prevents stale statuses from staying too long, or staying even if the user's account is gone.
+
+Clients MUST NOT keep previous statuses for users after receiving an update.
