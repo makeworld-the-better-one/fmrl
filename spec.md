@@ -181,14 +181,14 @@ Clients SHOULD include `If-Modified-Since` with every request where the the prev
 If the server is hosted at `example.com`, the URL to get the status of a the user `bob` looks like
 
 ```
-http://example.com/fmrl/users/bob
+http://example.com/fmrl/user/bob
 ```
 
 Only a GET request is valid.
 
 ### Batch Query
 
-A batch query returns data for multiple users.
+A batch query returns data for multiple users. Note this path is `/users` while the previous one is `/user`.
 
 The client makes a GET request that looks like this:
 
@@ -251,7 +251,7 @@ An empty JSON document like `{}` is valid, but of course will do nothing.
 If the server is hosted at `example.com`, the URL to set the status of a the user `bob` looks like
 
 ```
-http://example.com/fmrl/users/bob
+http://example.com/fmrl/user/bob
 ```
 
 To change the `status` of Bob, the PUT body would look like:
@@ -269,7 +269,7 @@ The only field this doesn't apply to is the `avatar` field. Servers MUST reject 
 To set the avatar for bob, the client makes a PUT request to the following URL:
 
 ```
-http://example.com/fmrl/users/bob/avatar
+http://example.com/fmrl/user/bob/avatar
 ```
 
 The body of the PUT request MUST be either a JPEG or PNG image.
