@@ -62,6 +62,8 @@ To refer to an fmrl user, their full username must be used. Like email, this inc
 
 Clients MUST accept these kinds of strings for following or viewing users, and MUST NOT accept other methods.
 
+Servers never have to deal with these kinds of strings.
+
 ## User Data
 
 "User data" is all the information needed to display a full status for that user. It's encoded in JSON. Every part of the the API sends out this kind of data, whether on its own for one user, or in an array, etc.
@@ -170,6 +172,8 @@ Clients MUST support HTTP and HTTPS, supporting at least TLS 1.2. Servers SHOULD
 Servers MUST support all the GET API calls listed below.
 
 Clients MUST NOT send request URLs longer than 2048 bytes. Servers MAY support URLs longer than this, and shouldn't need to add code that discriminates against longer URLs.
+
+The API MUST be available on port 80 (HTTP) and/or port 443 (HTTPS). Other ports are not supported, as there is no way to specify them in a global username.
 
 ### Headers
 
