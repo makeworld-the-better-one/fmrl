@@ -24,11 +24,10 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
   - [A note on Unicode](#a-note-on-unicode)
   - [HTTP API](#http-api)
     - [Headers](#headers)
+    - [Status Codes and Errors](#status-codes-and-errors)
     - [Single User Query](#single-user-query)
     - [Batch Query](#batch-query)
-    - [Delta Query](#delta-query)
     - [Authentication](#authentication)
-    - [Errors](#errors)
     - [Set Status Field(s)](#set-status-fields)
     - [Set Avatar](#set-avatar)
   - [Client Status Storage](#client-status-storage)
@@ -175,11 +174,32 @@ Clients MUST NOT send request URLs longer than 2048 bytes. Servers MAY support U
 
 The API MUST be available on port 80 (HTTP) and/or port 443 (HTTPS). Other ports are not supported, as there is no way to specify them in a global username.
 
+Clients MUST NOT follow redirects, and servers MUST NOT offer them.
+
 ### Headers
 
 Servers MUST include [`Last-Modified`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified) in all API responses. Servers also MUST follow the rules of [`If-Modified-Since`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since) if the client provides it in the request. Clients MUST be able to handle status code 304 in accordance with the rules of `If-Modified-Since`.
 
 Clients SHOULD include `If-Modified-Since` with every request where the the previous update time is known. The returned `Last-Modified` value from the server can be used for the next request.
+
+### Status Codes and Errors
+
+Servers may encounter errors when a client sets or gets statuses, and these errors should be able to be communicated back to the user.
+
+If the request was successful, servers MUST return 200 or 304.
+
+If there was an error with the client request, the server MUST return a 4xx status code. A server-side error MUST cause 5xx status code to be returned. 
+
+All other status codes are banned.
+
+In the case of any error, plain text (UTF-8) SHOULD be returned that gives a brief explanation of the error. For example:
+
+```
+Image not recognized as JPEG or PNG.
+```
+
+The client SHOULD then display this error to the user, indicating that something failed. Clients shouldn't expect the error description to be only one line long.
+
 
 ### Single User Query
 
@@ -190,6 +210,8 @@ http://example.com/fmrl/user/bob
 ```
 
 Only a GET request is valid.
+
+Servers MUST return status code 404 if the user does not exist.
 
 ### Batch Query
 
@@ -202,27 +224,22 @@ http://example.com/fmrl/users?user=username1&user=username2
 ```
 
 
-The server returns the schema described in [§User data](#user-data), but multiple of them, enclosed in a JSON list:
+The server returns the schema described in [§User data](#user-data), but multiple of them, enclosed in a JSON dictionary mapping usernames to user data.
 
 ```json
-[
-    {...},
-    {...}
-]
+{
+    "bob": {...},
+    "alice": {...}
+}
 ```
 
-### Delta Query
+If the client makes the request with an `If-Modified-Since` header, the server MUST only return data for users that have been updated since the time in that header. Users whose status was updated previous to that time MUST NOT appear in the dictionary.
 
-A delta query returns data for multiple users, but only the users that have new data. The client MUST make the request with an `If-Modified-Since` header, and the server MUST only return data for users that have been updated since the time in that header.
+The client can ensure no users will be removed simply by not including the header.
 
-The GET request looks like:
+The `Last-Modified` header MUST be included in the response from the server, and MUST be set to the most recent updated time out of all the statuses.
 
-```
-http://example.com/fmrl/new?user=username1&user=username2
-```
-
-And the response is the same layout as [§Batch Query](#batch-query).
-
+Usernames that don't exist or cause errors when the server looks them up MUST be silently not included in the dictionary.
 
 ### Authentication
 
@@ -231,21 +248,6 @@ APIs that allow updating your status on your server must be protected with authe
 Servers MUST return status code 401 for requests that require authentication but don't have it.
 
 Creating an account is handled by each server independently and is not defined here. Servers SHOULD allow users to change their password by proving they have access to another service, like email. This helps keep their account secure if their password is leaked.
-
-### Errors
-
-PUT requests (defined below) change the user's status, and have the potential for errors, on the client or server side.
-
-The server MUST return 200 OK if the request data was set successfully. If there was an error with the client request body, the server MUST return 400. A server error MUST cause 500 to be returned.
-
-In the case of either error, plain text (UTF-8) must be returned that gives a brief explanation of the error. For example:
-
-```
-Image not recognized as JPEG or PNG.
-```
-
-The client SHOULD then display this error to the user, indicating that the status update failed. Clients shouldn't expect the error description to be only one line long.
-
 
 ### Set Status Field(s)
 
