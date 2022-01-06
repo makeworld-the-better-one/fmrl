@@ -233,6 +233,8 @@ The server returns the schema described in [§User data](#user-data), but multip
 }
 ```
 
+Clients MUST NOT include usernames more than once, such as `?user=bob&user=alice&user=bob`. Servers MAY deduplicate usernames to avoid setting duplicate keys in the returned JSON. Servers MAY also generate the JSON normally, including duplicate entries.
+
 If the client makes the request with an `If-Modified-Since` header, the server MUST only return data for users that have been updated since the time in that header. Users whose status was updated previous to that time MUST NOT appear in the dictionary.
 
 The client can ensure no users will be removed simply by not including the header.
