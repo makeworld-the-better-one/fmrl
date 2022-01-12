@@ -231,25 +231,52 @@ The client makes a GET request that looks like this:
 http://example.com/fmrl/users?user=username1&user=username2
 ```
 
-
-The server returns the schema described in [§User data](#user-data), but multiple of them, enclosed in a JSON dictionary mapping usernames to user data.
+Here is an example output:
 
 ```json
-{
-    "bob": {...},
-    "alice": {...}
-}
+[
+    {
+        "username": "bob",
+        "code": 200,
+        "data": {
+            "avatar": {
+                "original": "/path/to/avatar.jpg"
+            },
+            "name": "Jacob Jingleheimer",
+            "status": "Just grooving",
+            "emoji": "🤓",
+            "media": "Lord of The Rings",
+            "media_type": 2
+        }
+    },
+    {
+        "username": "alice",
+        "code": 404,
+        "msg": "User not found",
+    },
+    {
+        "username": "example",
+        "code": 304
+    }
+]
 ```
+
+The `username` field MUST be included.
+
+The `code` field MUST be included, as the HTTP status code that would be returned if a single user query was being made. If that status code represents an error, the `msg` field SHOULD be included with a description of the error. See [§Status Codes and Errors](#status-codes-and-errors) for details.
+
+The `data` field is the same format as [§User data](#user-data). If the `code` is not an error, the field MUST exist and be of the dictionary type. If the `code` is an error, `data` MUST NOT exist.
 
 Clients MUST NOT include usernames more than once, such as `?user=bob&user=alice&user=bob`. Servers MAY deduplicate usernames to avoid setting duplicate keys in the returned JSON. Servers MAY also generate the JSON normally, including duplicate entries.
 
-If the client makes the request with an `If-Modified-Since` header, the server MUST only return data for users that have been updated since the time in that header. Users whose status was updated previous to that time MUST NOT appear in the dictionary.
+All non-duplicated usernames the client requested MUST appear in the returned JSON.
 
-The client can ensure no users will be removed simply by not including the header.
+If the client makes the request with an `If-Modified-Since` header, the server MUST only return `data` for users that have been updated since the time in that header. Users whose status was updated previous to that time MUST have the `username` field, `"code": 304`, and nothing else. The `msg` field MUST NOT appear in the instance of `code` 304.
+
+The client can ensure all (non-error) users will have `data` simply by not including the `If-Modified-Since` header.
 
 The `Last-Modified` header MUST be included in the response from the server, and MUST be set to the most recent updated time out of all the statuses.
 
-Usernames that don't exist or cause errors when the server looks them up MUST be silently not included in the dictionary.
 
 ### Authentication
 
