@@ -206,6 +206,8 @@ Image not recognized as JPEG or PNG.
 
 The client SHOULD then display this error to the user, indicating that something failed. Clients shouldn't expect the error description to be only one line long.
 
+Some clients may be designed to automatically request status updates in the background. Clients SHOULD stop automatically requesting a user that returns a 4xx status code. Other status codes SHOULD NOT cause this.
+
 
 ### Single User Query
 
