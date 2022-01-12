@@ -170,6 +170,8 @@ The only officially defined API for fmrl is the one defined in this document, th
 
 Clients MUST support HTTP and HTTPS, supporting at least TLS 1.2. Servers SHOULD only serve HTTPS, but serving unsecure HTTP is allowed.
 
+Clients SHOULD try HTTPS first, then HTTP if it fails to prevent downgrade attacks.
+
 Servers MUST support all the GET API calls listed below.
 
 Clients MUST NOT send request URLs longer than 2048 bytes. Servers MAY support URLs longer than this, and shouldn't need to add code that discriminates against longer URLs.
@@ -254,6 +256,8 @@ APIs that allow updating your status on your server must be protected with authe
 Servers MUST return status code 401 for requests that require authentication but don't have it.
 
 The username in the basic auth header and the username for which a request is being made MUST match.
+
+Clients SHOULD warn users before sending their password over HTTP, as opposed to HTTPS.
 
 Creating an account is handled by each server independently and is not defined here. Servers SHOULD allow users to change their password by proving they have access to another service, like email. This helps keep their account secure if their password is discovered or leaked.
 
