@@ -1,6 +1,6 @@
 # Specification
 
-v0.0.0, December 2021
+v0.0.0 (versioning coming soon)
 
 **This is a draft version of the spec, and is subject to change.**
 
@@ -177,6 +177,8 @@ The API MUST be available on port 80 (HTTP) and/or port 443 (HTTPS). Other ports
 Clients MUST NOT follow redirects, and servers MUST NOT offer them.
 
 ### Headers
+
+This section only applies to GET requests.
 
 Servers MUST include [`Last-Modified`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified) in all API responses. Servers also MUST follow the rules of [`If-Modified-Since`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since) if the client provides it in the request. Clients MUST be able to handle status code 304 in accordance with the rules of `If-Modified-Since`.
 
