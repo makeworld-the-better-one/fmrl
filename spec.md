@@ -97,8 +97,8 @@ Other valid keys in the `avatar` dictionary provide lower resolution versions of
 ```json
 {
     "avatar": {
-        "original": "/path/to/avatar.jpg",
-        "48x48": "/path/to/avatar-48.jpg",
+        "original": "/path/to/avatar.jpeg",
+        "48x48": "/path/to/avatar-48",
         "360x360": "/path/to/avatar-large2.png"
     },
     ...
@@ -107,9 +107,11 @@ Other valid keys in the `avatar` dictionary provide lower resolution versions of
 
 Other keys MUST be in the format of `NxN`, where `N` is the width and height of the image in pixels.
 
-Clients cannot rely on any keys other than `original` existing however.
+Clients MUST NOT rely on any keys other than `original` existing however.
 
 Note that the value for all these keys is an absolute path that uses the same domain as the fmrl server. A value like `https://other-server.com/avatar.jpg` is not allowed. Servers MUST only serve absolute paths, and clients MUST NOT accept anything else.
+
+Clients MUST NOT rely on entries in the dictionary ending with a file extension. The only valid way to determine the image is JPEG or PNG, if required, is by the magic number in the first few bytes of the file.
 
 ### `name`
 
