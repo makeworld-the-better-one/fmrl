@@ -253,7 +253,7 @@ Usernames that don't exist or cause errors when the server looks them up MUST be
 
 APIs that allow updating your status on your server must be protected with authentication. To keep things simple, [basic authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization#basic_authentication) is used for each request that changes a user's status data.
 
-Servers MUST return status code 401 for requests that require authentication but don't have it.
+Servers MUST return status code 401 for requests that require authentication but don't have it, or if the password is incorrect.
 
 The username in the basic auth header and the username for which a request is being made MUST match.
 
