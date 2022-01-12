@@ -253,6 +253,8 @@ APIs that allow updating your status on your server must be protected with authe
 
 Servers MUST return status code 401 for requests that require authentication but don't have it.
 
+The username in the basic auth header and the username for which a request is being made MUST match.
+
 Creating an account is handled by each server independently and is not defined here. Servers SHOULD allow users to change their password by proving they have access to another service, like email. This helps keep their account secure if their password is discovered or leaked.
 
 ### Set Status Field(s)
