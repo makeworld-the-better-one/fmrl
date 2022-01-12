@@ -251,15 +251,15 @@ APIs that allow updating your status on your server must be protected with authe
 
 Servers MUST return status code 401 for requests that require authentication but don't have it.
 
-Creating an account is handled by each server independently and is not defined here. Servers SHOULD allow users to change their password by proving they have access to another service, like email. This helps keep their account secure if their password is leaked.
+Creating an account is handled by each server independently and is not defined here. Servers SHOULD allow users to change their password by proving they have access to another service, like email. This helps keep their account secure if their password is discovered or leaked.
 
 ### Set Status Field(s)
 
 This request sets one or more fields of the status. It is a PUT request. The body of the request is a JSON document of the same schema as the status. The server MUST replace any fields of the user's status with the fields included in the request body. Any fields not included in the request body MUST remain the same. Any fields in the request body that the server doesn't recognize MUST be ignored, instead of being set in the JSON.
 
-An empty JSON document like `{}` is valid, but of course will do nothing.
+An empty JSON document like `{}` is valid, but of course will do nothing. An empty body is not valid, and servers MUST return an error, like status code 400.
 
-If the server is hosted at `example.com`, the URL to set the status of a the user `bob` looks like
+If the server is hosted at `example.com`, the URL to set the status of the user `bob` looks like
 
 ```
 http://example.com/fmrl/user/bob
@@ -285,6 +285,7 @@ http://example.com/fmrl/user/bob/avatar
 
 The body of the PUT request MUST be either a JPEG or PNG image.
 
+Assuming the image was received and processed correctly, the server MUST return 200, and then MUST set the `original` key of the user JSON so that it points to where this avatar will be served from. The server MAY also derive alternate resolutions of the avatar at this point and set those keys as well.
 
 ## Client Status Storage
 
