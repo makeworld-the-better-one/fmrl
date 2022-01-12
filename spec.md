@@ -261,6 +261,11 @@ Clients SHOULD warn users before sending their password over HTTP, as opposed to
 
 Creating an account is handled by each server independently and is not defined here. Servers SHOULD allow users to change their password by proving they have access to another service, like email. This helps keep their account secure if their password is discovered or leaked.
 
+Servers MAY accept "tokens" instead of the actual account password for the user, stil using basic auth. A token system allows for each application to have its own token, which can be revoked individually by the user if the application is hacked or misbehaves.
+
+It also allows for tokens with limited scope, for example a token that can only update the media fields. This could be given to a service that tracks what you're listening to, like last.fm.
+
+
 ### Set Status Field(s)
 
 This request sets one or more fields of the status. It is a PUT request. The body of the request is a JSON document of the same schema as the status. The server MUST replace any fields of the user's status with the fields included in the request body. Any fields not included in the request body MUST remain the same. Any fields in the request body that the server doesn't recognize MUST be ignored, instead of being set in the JSON.
