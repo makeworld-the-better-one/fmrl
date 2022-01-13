@@ -6,9 +6,9 @@ Enter fmrl. Pronounced like the word ephemeral, it is a decentralized protocol t
 
 ## Current Status
 
-As of December 2021:
+As of January 2021:
 
-The protocol and project has only just begun. No software exists yet, and the protocol is receiving community feedback and may change rapidly.
+I am developing the reference server implementation, and updating the spec as I encounter issues. The spec will be versioned after that is done. A few other developers are working on their own server and client implementations. These will be linked here once the spec is versioned.
 
 ## Branding
 
