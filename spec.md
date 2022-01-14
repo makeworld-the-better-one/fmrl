@@ -269,7 +269,7 @@ The `data` field is the same format as [§User data](#user-data). If the `code` 
 
 Clients MUST NOT include usernames more than once, such as `?user=bob&user=alice&user=bob`. Servers MAY deduplicate usernames to avoid setting duplicate keys in the returned JSON. Servers MAY also generate the JSON normally, including duplicate entries.
 
-All non-duplicated usernames the client requested MUST appear in the returned JSON.
+All non-duplicated usernames the client requested MUST appear in the returned JSON. They MAY appear out-of-order as compared to the order in the URL query.
 
 If the client makes the request with an `If-Modified-Since` header, the server MUST only return `data` for users that have been updated since the time in that header. Users whose status was updated previous to that time MUST have the `username` field, `"code": 304`, and nothing else. The `msg` field MUST NOT appear in the instance of `code` 304.
 
