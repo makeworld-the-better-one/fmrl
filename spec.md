@@ -13,7 +13,7 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
   - [Terminology](#terminology)
   - [Usernames](#usernames)
   - [Global Usernames](#global-usernames)
-  - [User Data](#user-data)
+  - [User Data or Status](#user-data-or-status)
     - [`avatar`](#avatar)
     - [`name`](#name)
     - [`status`](#status)
@@ -53,7 +53,7 @@ A valid username consists only of ASCII lowercase letters, numbers, and the foll
 
 Usernames are limited to 40 characters. Due to the ASCII limitation, this is equivalent to 40 bytes.
 
-Servers MUST reject attempts for account creation with usernames that are invalid, and clients MUST NOT attempt to follow or retrieve updates for a user with an invalid username.
+Servers MUST reject attempts for account creation with usernames that are invalid, and clients MUST NOT attempt to follow, retrieve updates, or upload data for a user with an invalid username. This includes invalid length.
 
 ## Global Usernames
 
@@ -63,9 +63,9 @@ Clients MUST accept these kinds of strings for following or viewing users, and M
 
 Servers never have to deal with these kinds of strings.
 
-## User Data
+## User Data or Status
 
-"User data" is all the information needed to display a full status for that user. It's encoded in JSON. Every part of the the API sends out this kind of data, whether on its own for one user, or in an array, etc.
+"User data", or the status, is all the information needed to display a full status for that user. It's encoded in JSON. Every part of the the API sends out this kind of data, whether on its own for one user, or in an array, etc.
 
 In lieu of a proper JSON schema, here is an example layout of the data, with every valid field filled.
 
@@ -86,7 +86,9 @@ Any fields that do not appear here have an undefined meaning and purpose and SHO
 
 Missing fields are equivalent to the zero/empty value for the field. For example, having no `"status"` field is equivalent to `"status": ""`. The same goes for the JSON `null` value, it is equivalent to an empty string, or number zero, etc.
 
-All fields are optional.
+Any field can be missing, empty, or null and the user data will still be valid. Therefore, `{}` is a valid status, there just isn't much going on.
+
+Clients MUST support setting and getting all the fields above. Servers MAY choose to not support some, like avatars or emoji, and silently drop those fields when they are attempted to be set. So any of the field-specific requirements below for servers only apply if servers choose to support that field. Servers SHOULD support all fields, however.
 
 ### `avatar`
 
@@ -117,19 +119,29 @@ Servers MUST change all avatar strings when the avatar image changes. The only v
 
 ### `name`
 
-The display name of the user, not their username. It is RECOMMENDED clients and servers limit this to 40 UTF-8 codepoints.
+The display name of the user, not their username.
+
+Servers MUST limit this to 40 UTF-8 code points, returning code 413 to clients that try to set a longer one. Clients MUST NOT attempt to set a longer `name`. Clients SHOULD truncate any received `name` that is longer.
 
 ### `status`
 
-This is the main part of the data, the actual status line of the user. It is RECOMMENDED clients and servers limit this to 80 UTF-8 codepoints.
+This is the main part of the data, the actual status line of the user.
+
+Servers MUST limit this to 100 UTF-8 code points, returning code 413 to clients that try to set a longer one. Clients MUST NOT attempt to set a longer `status`. Clients SHOULD truncate any received `status` that is longer.
 
 ### `emoji`
 
 A single [fully-qualified](https://www.unicode.org/reports/tr51/#def_qualified_emoji_character) emoji, as defined by Unicode.
 
+Servers MUST validate this. Clients MUST validate this, both when setting and getting statuses.
+
+The only way to validate emojis is to compare them to a list of all emojis. A list of all valid emojis with code points can be found [here](https://unicode.org/Public/emoji/14.0/emoji-test.txt). Note the emoji version number in the URL, that can be changed to find the new file as new versions are released. Also note that list contains emojis that are not fully-qualified.
+
 ### `media`
 
-Media the user is consuming. It is RECOMMENDED clients and servers limit this to 80 UTF-8 codepoints.
+Media the user is consuming.
+
+Servers MUST limit this to 100 UTF-8 code points, returning code 413 to clients that try to set a longer one. Clients MUST NOT attempt to set a longer `media`. Clients SHOULD truncate any received `media` that is longer.
 
 ### `media_type`
 
@@ -149,7 +161,7 @@ Number 0 means the media type is not specified by the user. Perhaps no icon shou
 
 ## String cleaning
 
-Certain characters are banned in general data strings. Servers MUST reject attempts to set data strings that contain these characters, and clients MUST NOT upload data strings that contain these characters. Clients MAY strip out these characters when they are included, instead of returning an error to the user.
+Certain characters are banned in user data strings. Servers MUST reject attempts to set data strings that contain these characters, and clients MUST NOT upload data strings that contain these characters. Clients MAY strip out these characters when user attempts to upload them, instead of returning an error to the user. Clients MUST strip these out from statuses it downloads.
 
 Characters that are banned are those that attempt to control presentation and/or spacing. This are the ASCII and Unicode control characters. Note that this includes commonplace characters like TAB (U+0009) and LINE FEED (U+000A).
 
@@ -162,9 +174,9 @@ Banned code points:
 
 ## A note on Unicode
 
-The string limits of fmrl are expressed in Unicode UTF-8 codepoints. They are not equivalent with bytes, and you must make sure you are counting them correctly.
+The string limits of fmrl are expressed in Unicode UTF-8 code points. These are not equivalent with bytes, and you must make sure you are counting them correctly.
 
-Counting codepoints is biased depending on the language, as some languages take more codepoints to express an idea than others. One possible solution to this would be to count Unicode graphemes instead, but that is also not equal for all languages, and is not a trivial thing to do in many programming languages.
+Counting code points is biased depending on the language, as some languages take more code points to express an idea than others. One possible solution to this would be to count Unicode graphemes instead, but that is also not equal for all languages, and is not a trivial thing to do in many programming languages.
 
 ## HTTP API
 
@@ -172,7 +184,7 @@ The only officially defined API for fmrl is the one defined in this document, th
 
 Clients MUST support HTTP and HTTPS, supporting at least TLS 1.2. Servers SHOULD only serve HTTPS, but serving unsecure HTTP is allowed.
 
-Clients SHOULD try HTTPS first, then HTTP if it fails to prevent downgrade attacks.
+Clients SHOULD try HTTPS first, then HTTP if it fails, to prevent downgrade attacks.
 
 Servers MUST support all the GET API calls listed below.
 
@@ -292,9 +304,9 @@ Clients SHOULD warn users before sending their password over HTTP, as opposed to
 
 Creating an account is handled by each server independently and is not defined here. Servers SHOULD allow users to change their password by proving they have access to another service, like email. This helps keep their account secure if their password is discovered or leaked.
 
-Servers MAY accept "tokens" instead of the actual account password for the user, stil using basic auth. A token system allows for each application to have its own token, which can be revoked individually by the user if the application is hacked or misbehaves.
+Servers MAY accept "tokens" instead of the actual account password for the user, still using basic auth. A token system allows for each application to have its own token, which can be revoked individually by the user if the application is hacked or misbehaves, or if the token is leaked.
 
-It also allows for tokens with limited scope, for example a token that can only update the media fields. This could be given to a service that tracks what you're listening to, like last.fm.
+It also allows for tokens with limited scope, for example a token that can only update the media fields. This could be given to a service that tracks what you're listening to and updates your status with it.
 
 
 ### Set Status Field(s)
