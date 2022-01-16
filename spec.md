@@ -24,6 +24,7 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
   - [A note on Unicode](#a-note-on-unicode)
   - [HTTP API](#http-api)
     - [Headers](#headers)
+    - [Cross-Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
     - [Status Codes and Errors](#status-codes-and-errors)
     - [Single User Query](#single-user-query)
     - [Batch Query](#batch-query)
@@ -203,6 +204,33 @@ This section only applies to GET requests.
 Servers MUST include [`Last-Modified`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified) in all API responses. Servers also MUST follow the rules of [`If-Modified-Since`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since) if the client provides it in the request. Clients MUST be able to handle status code 304 in accordance with the rules of `If-Modified-Since`.
 
 Clients SHOULD include `If-Modified-Since` with every request where the the previous update time is known. The returned `Last-Modified` value from the server can be used for the next request.
+
+### Cross-Origin Resource Sharing (CORS)
+
+> Cross-origin resource sharing (CORS) is a mechanism that allows restricted resources on a web page to be requested from another domain outside the domain from which the first resource was served.
+
+- [Wikipedia](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
+
+To allow in-browser fmrl clients to make requests to servers, fmrl servers MUST support CORS. CORS is acheived through setting certain headers. You can (and should!) read more about CORS [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS), but everything a server needs to do to be compliant is explained below.
+
+These instructions only apply to API calls that use GET, not those that update statuses and use PUT.
+
+The same paths that support GET MUST also support OPTIONS. When OPTIONS requests are made, the response is the same every time. Status code 204 with the following headers and no body:
+
+```
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, OPTIONS
+Access-Control-Allow-Headers: If-Modified-Since
+Access-Control-Max-Age: 86400
+```
+
+And then responses to GET requests MUST always have the following header included:
+
+```
+Access-Control-Allow-Origin: *
+```
+
+Following these requirements is all that is needed for in-browser clients to work with your server, which is required.
 
 ### Status Codes and Errors
 
