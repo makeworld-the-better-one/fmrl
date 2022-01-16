@@ -213,7 +213,7 @@ Clients SHOULD include `If-Modified-Since` with every request where the the prev
 
 To allow in-browser fmrl clients to make requests to servers, fmrl servers MUST support CORS. CORS is acheived through setting certain headers. You can (and should!) read more about CORS [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS), but everything a server needs to do to be compliant is explained below.
 
-These instructions only apply to API calls that use GET, not those that update statuses and use PUT.
+These instructions only apply to API calls that use GET, those that don't update any data.
 
 The same paths that support GET MUST also support OPTIONS. When OPTIONS requests are made, the response is the same every time. Status code 204 with the following headers and no body:
 
@@ -341,7 +341,7 @@ It also allows for tokens with limited scope, for example a token that can only 
 
 ### Set Status Field(s)
 
-This request sets one or more fields of the status. It is a PUT request. The body of the request is a JSON document of the same schema as the status. The server MUST replace any fields of the user's status with the fields included in the request body. Any fields not included in the request body MUST remain the same. Any fields in the request body that the server doesn't recognize MUST be ignored, instead of being set in the JSON.
+This request sets one or more fields of the status. It is a PATCH request. The body of the request is a JSON document of the same schema as the status. The server MUST replace any fields of the user's status with the fields included in the request body. Any fields not included in the request body MUST remain the same. Any fields in the request body that the server doesn't recognize MUST be ignored, instead of being set in the JSON.
 
 An empty JSON document like `{}` is valid, but of course will do nothing. An empty body is not valid, and servers MUST return an error, like status code 400.
 
@@ -351,7 +351,7 @@ If the server is hosted at `example.com`, the URL to set the status of the user 
 http://example.com/fmrl/user/bob
 ```
 
-To change the `status` of Bob, the PUT body would look like:
+To change the `status` of Bob, the PATCH body would look like:
 
 ```json
 {
