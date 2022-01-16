@@ -57,7 +57,9 @@ Servers MUST reject attempts for account creation with usernames that are invali
 
 ## Global Usernames
 
-To refer to an fmrl user, their full username must be used. Like email, this includes the server. The canonical way of doing this is as follows: `@username@example.com`, where `example.com` is the fmrl server that the user `username` has an account on.
+To refer to an fmrl user, their full username must be used. Like email, this includes the server. The canonical way of doing this is as follows: `@username@example.com`, where `example.com` is the fmrl server that the user `username` has an account on. Note the leading `@`, which differentiates it from email, and is more similar to social media handles.
+
+The other valid way of doing this is: `fmrl:username@example.com`. Note the leading `@` is dropped. This is a URI, so this can be used to link to fmrl users in Web pages or other hyperlinked media. fmrl clients can then choose to support opening these kinds of URIs, to display the user's status, and/or ask if you'd like to follow them.
 
 Clients MUST accept these kinds of strings for following or viewing users, and MUST NOT accept other methods.
 
