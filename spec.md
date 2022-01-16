@@ -375,7 +375,7 @@ The body of the PUT request MUST be either a JPEG or PNG image.
 
 Assuming the image was received and processed correctly, the server MUST return 200, and then MUST set the `original` key of the user JSON so that it points to where this avatar will be served from. This processing MAY include verifying that a valid image file was received, or at least a valid encoding. The server MAY also derive alternate resolutions of the avatar at this point and set those keys as well.
 
-Servers SHOULD limit the request body to 4 MiB, rejecting larger images. Clients SHOULD NOT try to set avatars with images larger than 4 MiB.
+Servers SHOULD limit the request body to 4 MiB, rejecting larger images with code 413. Clients SHOULD NOT try to set avatars with images larger than 4 MiB.
 
 ## Client Status Storage
 
