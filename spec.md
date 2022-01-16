@@ -113,6 +113,8 @@ Note that the value for all these keys is an absolute path that uses the same do
 
 Clients MUST NOT rely on entries in the dictionary ending with a file extension. The only valid way to determine the image is JPEG or PNG, if required, is by the magic number in the first few bytes of the file.
 
+Servers MUST change all avatar strings when the avatar image changes. The only valid way for clients to know if the avatar has changed is to compare the avatar string to previously cached one. If the avatar *path* must stay the same for simplicity, the server can simply add a query string like `/avatar.png?341` that will be ignored by the server. This still changes the avatar *string*, so it works. Previous avatar strings SHOULD NOT be reused within a reasonable length of time for a client to be open without updating, perhaps 30 minutes, so that clients are aware of all avatar updates. Not reusing also works fine.
+
 ### `name`
 
 The display name of the user, not their username. It is RECOMMENDED clients and servers limit this to 40 UTF-8 codepoints.
