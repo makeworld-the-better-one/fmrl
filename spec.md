@@ -185,6 +185,8 @@ Counting code points is biased depending on the language, as some languages take
 
 The only officially defined API for fmrl is the one defined in this document, that operates over HTTP.
 
+Servers and clients MUST support HTTP/1.1, and MAY support later versions such as HTTP/2 or HTTP/3.
+
 Clients MUST support HTTP and HTTPS, supporting at least TLS 1.2. Servers SHOULD only serve HTTPS, but serving unsecure HTTP is allowed.
 
 Clients SHOULD try HTTPS first, then HTTP if it fails, to prevent downgrade attacks.
