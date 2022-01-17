@@ -338,7 +338,7 @@ An empty JSON document like `{}` is valid, but of course will do nothing. An emp
 If the server is hosted at `example.com`, the URL to set the status of the user `bob` looks like
 
 ```
-http://example.com/fmrl/user/bob
+http://example.com/.well-known/fmrl/user/bob
 ```
 
 To change the `status` of Bob, the PATCH body would look like:
@@ -356,7 +356,7 @@ The only field this doesn't apply to is the `avatar` field. Servers MUST reject 
 To set the avatar for bob, the client makes a PUT request to the following URL:
 
 ```
-http://example.com/fmrl/user/bob/avatar
+http://example.com/.well-known/fmrl/user/bob/avatar
 ```
 
 The body of the PUT request MUST be either a JPEG or PNG image.
