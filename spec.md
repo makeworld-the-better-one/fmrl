@@ -50,7 +50,7 @@ An **update** is when part of a user's data has changed.
 
 Usernames are the only thing that identify one account from another on the same server.
 
-A valid username consists only of ASCII lowercase letters, numbers, and the following characters: `_.` All together, the valid character set is `abcdefghijklmnopqrstuvqxyz0123456789_.` This character set keeps usernames URL-safe, with only one canonical representation, and avoids bringing complexity of Unicode where it is not necessary.
+A valid username consists only of ASCII lowercase letters, numbers, and the following characters: `_.` All together, the valid character set is `abcdefghijklmnopqrstuvwxyz0123456789_.` This character set keeps usernames URL-safe, with only one canonical representation, and avoids bringing complexity of Unicode where it is not necessary.
 
 Usernames are limited to 40 characters. Due to the ASCII limitation, this is equivalent to 40 bytes.
 
