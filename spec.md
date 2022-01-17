@@ -239,7 +239,7 @@ Servers may encounter errors when a client sets or gets statuses, and these erro
 
 If the request was successful, servers MUST return 200 or 304.
 
-If there was an error with the client request, the server MUST return a 4xx status code. A server-side error MUST cause 5xx status code to be returned. 
+If there was an error with the client request, the server MUST return a 4xx status code. A server-side error MUST cause 5xx status code to be returned.  For example, servers SHOULD return 405 (Method Not Allowed) for requests using methods not defined in this document.
 
 All other status codes are banned.
 
