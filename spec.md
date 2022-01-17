@@ -26,8 +26,7 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
     - [Headers](#headers)
     - [Cross-Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
     - [Status Codes and Errors](#status-codes-and-errors)
-    - [Single User Query](#single-user-query)
-    - [Batch Query](#batch-query)
+    - [Status Query](#status-query)
     - [Authentication](#authentication)
     - [Set Status Field(s)](#set-status-fields)
     - [Set Avatar](#set-avatar)
@@ -254,27 +253,14 @@ The client SHOULD then display this error to the user, indicating that something
 
 Some clients may be designed to automatically request status updates in the background. Clients SHOULD stop automatically requesting a user that returns a 4xx status code. Other status codes SHOULD NOT cause this.
 
+### Status Query
 
-### Single User Query
-
-If the server is hosted at `example.com`, the URL to get the status of a the user `bob` looks like
-
-```
-http://example.com/fmrl/user/bob
-```
-
-Only a GET request is valid.
-
-Servers MUST return status code 404 if the user does not exist.
-
-### Batch Query
-
-A batch query returns data for multiple users. Note this path is `/users` while the previous one is `/user`.
+A status query returns data for one or more users.
 
 The client makes a GET request that looks like this:
 
 ```
-http://example.com/fmrl/users?user=username1&user=username2
+http://example.com/.well-known/fmrl/users?user=username1&user=username2
 ```
 
 Here is an example output:
@@ -309,7 +295,7 @@ Here is an example output:
 
 The `username` field MUST be included.
 
-The `code` field MUST be included, as the HTTP status code that would be returned if a single user query was being made. If that status code represents an error, the `msg` field SHOULD be included with a description of the error. See [§Status Codes and Errors](#status-codes-and-errors) for details.
+The `code` field MUST be included, as the HTTP status code that is appropriate. If that status code represents an error, the `msg` field SHOULD be included with a description of the error. See [§Status Codes and Errors](#status-codes-and-errors) for details.
 
 The `data` field is the same format as [§User data](#user-data). If the `code` is not an error, the field MUST exist and be of the dictionary type. If the `code` is an error, `data` MUST NOT exist.
 
@@ -322,6 +308,8 @@ If the client makes the request with an `If-Modified-Since` header, the server M
 The client can ensure all (non-error) users will have `data` simply by not including the `If-Modified-Since` header.
 
 The `Last-Modified` header MUST be included in the response from the server, and MUST be set to the most recent updated time out of all the statuses.
+
+Since the `code` field exists, servers MUST always return 200 OK, unless no usernames are specified or the URL path is incorrect.
 
 
 ### Authentication
