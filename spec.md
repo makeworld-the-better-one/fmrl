@@ -123,13 +123,13 @@ Servers MUST change all avatar strings when the avatar image changes. The only v
 
 The display name of the user, not their username.
 
-Servers MUST limit this to 40 UTF-8 code points, returning code 413 to clients that try to set a longer one. Clients MUST NOT attempt to set a longer `name`. Clients SHOULD truncate any received `name` that is longer.
+Servers MUST limit this to 40 UTF-8 code points, returning code 400 to clients that try to set a longer one. Clients MUST NOT attempt to set a longer `name`. Clients SHOULD truncate any received `name` that is longer.
 
 ### `status`
 
 This is the main part of the data, the actual status line of the user.
 
-Servers MUST limit this to 100 UTF-8 code points, returning code 413 to clients that try to set a longer one. Clients MUST NOT attempt to set a longer `status`. Clients SHOULD truncate any received `status` that is longer.
+Servers MUST limit this to 100 UTF-8 code points, returning code 400 to clients that try to set a longer one. Clients MUST NOT attempt to set a longer `status`. Clients SHOULD truncate any received `status` that is longer.
 
 ### `emoji`
 
@@ -143,7 +143,7 @@ The only way to validate emojis is to compare them to a list of all emojis. A li
 
 Media the user is consuming.
 
-Servers MUST limit this to 100 UTF-8 code points, returning code 413 to clients that try to set a longer one. Clients MUST NOT attempt to set a longer `media`. Clients SHOULD truncate any received `media` that is longer.
+Servers MUST limit this to 100 UTF-8 code points, returning code 400 to clients that try to set a longer one. Clients MUST NOT attempt to set a longer `media`. Clients SHOULD truncate any received `media` that is longer.
 
 ### `media_type`
 
