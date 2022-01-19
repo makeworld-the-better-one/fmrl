@@ -90,7 +90,7 @@ Missing fields are equivalent to the zero/empty value for the field. For example
 
 Any field can be missing, empty, or null and the user data will still be valid. Therefore, `{}` is a valid status, there just isn't much going on.
 
-Clients MUST support setting and getting all the fields above. Servers MAY choose to not support some, like avatars or emoji, and silently drop those fields when they are attempted to be set. So any of the field-specific requirements below for servers only apply if servers choose to support that field. Servers SHOULD support all fields, however.
+Clients MUST support setting and getting all the fields above. Servers MAY choose to not support some, like avatars or emoji. So any of the field-specific requirements below for servers only apply if servers choose to support that field. Servers SHOULD support all fields, however.
 
 ### `avatar`
 
@@ -160,6 +160,7 @@ Registered types of media:
 
 Number 0 means the media type is not specified by the user. Perhaps no icon should be displayed.
 
+Servers MUST return code 400 to clients that try to set a `media_type` value outside of the range above.
 
 ## String cleaning
 
@@ -331,7 +332,9 @@ It also allows for tokens with limited scope, for example a token that can only 
 
 ### Set Status Field(s)
 
-This request sets one or more fields of the status. It is a PATCH request. The body of the request is a JSON document of the same schema as the status. The server MUST replace any fields of the user's status with the fields included in the request body. Any fields not included in the request body MUST remain the same. Any fields in the request body that the server doesn't recognize MUST be ignored, instead of being set in the JSON.
+This request sets one or more fields of the status. It is a PATCH request. The body of the request is a JSON document of the same schema as the status. The server MUST replace any fields of the user's status with the fields included in the request body. Any fields not included in the request body MUST remain the same. Any fields in the request body that the server doesn't recognize MUST NOT be set in the JSON.
+
+Servers SHOULD return code 400 with error text if the client body tries to set fields the server doesn't support.
 
 An empty JSON document like `{}` is valid, but of course will do nothing. An empty body is not valid, and servers MUST return an error, like status code 400.
 
