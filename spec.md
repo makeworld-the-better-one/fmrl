@@ -94,7 +94,7 @@ Clients MUST support setting and getting all the fields above. Servers MAY choos
 
 ### `avatar`
 
-The avatar is the profile picture for the user. If the `avatar` key exists, the `original` key MUST exist, which points to the largest and canonical version of the avatar. Servers MUST only serve avatar images which are square. Servers MUST only serve either JPEG or PNG avatar files.
+The avatar is the profile picture for the user. If the `avatar` key exists and is not `null`, the `original` key MUST exist, which points to the largest and canonical version of the avatar. Servers MUST only serve avatar images which are square. Servers MUST only serve either JPEG or PNG avatar files.
 
 Other valid keys in the `avatar` dictionary provide lower resolution versions of the avatar. Here's an example:
 
@@ -113,7 +113,7 @@ Other keys MUST be in the format of `NxN`, where `N` is the width and height of 
 
 Clients MUST NOT rely on any keys other than `original` existing however.
 
-Note that the value for all these keys is an absolute path that uses the same domain as the fmrl server. A value like `https://other-server.com/avatar.jpg` is not allowed. Servers MUST only serve absolute paths, and clients MUST NOT accept anything else.
+Note that the value for all these keys is an absolute path that uses the same domain as the fmrl server. A value like `https://other-server.com/avatar.jpg` is not allowed. Servers MUST only serve absolute paths, and clients MUST NOT accept anything else. In other words, the values of keys in `avatar` MUST always begin with `/` and be resolved relative to the domain of the server. Any avatar strings not starting with `/` MUST be ignored.
 
 Clients MUST NOT rely on entries in the dictionary ending with a file extension. The only valid way to determine the image is JPEG or PNG, if required, is by the magic number in the first few bytes of the file.
 
