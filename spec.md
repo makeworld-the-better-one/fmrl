@@ -215,9 +215,9 @@ Clients SHOULD include `If-Modified-Since` with every request where the the prev
 
 To allow in-browser fmrl clients to make requests to servers, fmrl servers MUST support CORS. CORS is acheived through setting certain headers. You can (and should!) read more about CORS [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS), but everything a server needs to do to be compliant is explained below.
 
-These instructions only applies to the batch query, as it is the only API call that clients from other servers in the browser will use.
+These instructions only applies to the status query, as it is the only API call that clients from other servers in the browser will use.
 
-The batch query path MUST also support OPTIONS. When OPTIONS requests are made, the response is the same every time. Status code 204 with the following headers and no body:
+The status query path MUST also support OPTIONS. When OPTIONS requests are made, the response is the same every time. Status code 204 with the following headers and no body:
 
 ```
 Access-Control-Allow-Origin: *
