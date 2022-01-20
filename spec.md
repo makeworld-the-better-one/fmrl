@@ -34,7 +34,11 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
     - [Following API](#following-api)
       - [Get Following](#get-following)
       - [Set Following](#set-following)
-  - [Client Status Storage](#client-status-storage)
+  - [Client Behavior](#client-behavior)
+    - [Status Storage](#status-storage)
+    - [Automatic Retrieval of Statuses](#automatic-retrieval-of-statuses)
+    - [Manual Update](#manual-update)
+  - [Server Behavior](#server-behavior)
 
 
 ## Preamble
@@ -254,8 +258,6 @@ Image not recognized as JPEG or PNG.
 
 The client SHOULD then display this error to the user, indicating that something failed. Clients shouldn't expect the error description to be only one line long, or to exist at all.
 
-Some clients may be designed to automatically request status updates in the background. Clients SHOULD stop automatically requesting a user that returns a 4xx status code. Other status codes such as 5xx SHOULD NOT cause this.
-
 ### Authentication
 
 APIs that allow updating data on the server must be protected with authentication. To keep things simple, [basic authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization#basic_authentication) is used for each request that changes a user's status data.
@@ -435,8 +437,29 @@ Servers apply these instructions against the following list.
 
 Servers MUST respond with 200 if the JSON was parsed and set properly. The new `Last-Modified` header for the following list MUST also be included, which should of course just be the current time.
 
-## Client Status Storage
+## Client Behavior
+
+This section provides guidelines for how clients should behave.
+
+### Status Storage
 
 Clients SHOULD NOT retain statuses in long term storage. For example, no statuses should be available immediately after opening a GUI desktop client. The client would need to request statuses from the servers again. This prevents stale statuses from staying too long, or staying even if the user's account is gone.
 
 Clients MUST NOT keep previous statuses for users after receiving an update.
+
+### Automatic Retrieval of Statuses
+
+Some clients may be designed to automatically request status updates in the background. Clients SHOULD stop automatically requesting a user that returns a 4xx status code. Other status codes such as 5xx SHOULD NOT cause this. The client MAY check the 4xx user again after some longer interval, such as when the application is re-opened.
+
+If the client automatically retrieve statuses, it SHOULD also retrieve the status of the user using the client regularly, possibly more regularly than other statuses.. This is because there may be other clients running that have changed that user's status.
+
+For clients that support it, automatic retrieval of the following list SHOULD also happen.
+
+### Manual Update
+
+If the user clicks some sort of manual update or "refresh" button, that SHOULD update: the statuses of the accounts the user follows, the user's status, and the following list of the user.
+
+
+## Server Behavior
+
+Servers SHOULD NOT have a list of usernames available, to protect the privacy of user accounts.

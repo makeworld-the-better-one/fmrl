@@ -40,7 +40,7 @@ No. I'm hoping to create something fun, that some people would use and get a kic
 
 I'd love to see non-techy people using this as way to keep up with and check in on friends, like how Discord statuses are used by some now. fmrl could be used by those who aren't using Discord already, or by those who see it as an improvement for what Discord does.
 
-To do this requires good web interfaces exist, as well as a good community of servers ready to host people.
+To do this requires that good web interfaces exist, as well as a good community of servers ready to host people.
 
 Aside from that audience, maybe this is something that the [Mastodon](https://joinmastodon.org/) crowd will use, people who are already willing to try something new and understand the merits of decentralization. Some sort of integration like a Mastdon+fmrl client would be really cool.
 
@@ -50,7 +50,7 @@ The main difference is that the data is structured, while finger data is just a 
 
 **Q: Why not build off [Webfinger](https://www.packetizer.com/ws/webfinger/)?**
 
-Webfinger is also complex, extensible, and ugly. It wasn't designed with something like fmrl in mind. It also provides no standard way for clients update data. There would be little advantage in using it compared to making something new that is simpler.
+Webfinger is complex, extensible, and ugly. It wasn't designed with something like fmrl in mind. It also provides no standard way for clients update data. There would be little advantage in using it compared to making something new that is simpler.
 
 ## Discussion
 
