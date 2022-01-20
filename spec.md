@@ -26,10 +26,14 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
     - [Headers](#headers)
     - [Cross-Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
     - [Status Codes and Errors](#status-codes-and-errors)
-    - [Status Query](#status-query)
     - [Authentication](#authentication)
-    - [Set Status Field(s)](#set-status-fields)
-    - [Set Avatar](#set-avatar)
+    - [Status API](#status-api)
+      - [Status Query](#status-query)
+      - [Set Status Field(s)](#set-status-fields)
+      - [Set Avatar](#set-avatar)
+    - [Following API](#following-api)
+      - [Get Following](#get-following)
+      - [Set Following](#set-following)
   - [Client Status Storage](#client-status-storage)
 
 
@@ -62,8 +66,6 @@ To refer to an fmrl user, their full username must be used. Like email, this inc
 The other valid way of doing this is: `fmrl:username@example.com`. Note the leading `@` is dropped. This is a URI, so this can be used to link to fmrl users in Web pages or other hyperlinked media. fmrl clients can then choose to support opening these kinds of URIs, to display the user's status, and/or ask if you'd like to follow them.
 
 Clients MUST accept these kinds of strings for following or viewing users, and MUST NOT accept other methods.
-
-Servers never have to deal with these kinds of strings.
 
 ## User Data or Status
 
@@ -183,15 +185,13 @@ Counting code points is biased depending on the language, as some languages take
 
 ## HTTP API
 
-The only officially defined API for fmrl is the one defined in this document, that operates over HTTP.
+The only officially defined API for fmrl is the one defined in this document, that operates over HTTP. Servers and clients MUST support it to work within the fmrl ecosystem. Some parts of the API are optional, and this is noted for those sections.
 
 Servers and clients MUST support HTTP/1.1, and MAY support later versions such as HTTP/2 or HTTP/3.
 
-Clients MUST support HTTP and HTTPS, supporting at least TLS 1.2. Servers SHOULD only serve HTTPS, but serving unsecure HTTP is allowed.
+Clients MUST support HTTP and HTTPS, supporting at least TLS 1.2. Servers MUST support TLS 1.2 at least. Servers SHOULD only serve HTTPS, but serving unsecure HTTP is allowed.
 
 Clients SHOULD try HTTPS first, then HTTP if it fails, to prevent downgrade attacks.
-
-Servers MUST support all the GET API calls listed below.
 
 Clients MUST NOT send request URLs longer than 2048 bytes. Servers MAY support URLs longer than this, and shouldn't need to add code that discriminates against longer URLs.
 
@@ -203,9 +203,11 @@ Clients MUST NOT follow redirects, and servers MUST NOT offer them.
 
 This section only applies to GET requests.
 
-Servers MUST include [`Last-Modified`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified) in all API responses. Servers also MUST follow the rules of [`If-Modified-Since`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since) if the client provides it in the request. Clients MUST be able to handle status code 304 in accordance with the rules of `If-Modified-Since`.
+Servers MUST include [`Last-Modified`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified) in all API responses. Servers also MUST follow the rules of [`If-Modified-Since`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since) if the client provides it in the request.
 
 Clients SHOULD include `If-Modified-Since` with every request where the the previous update time is known. The returned `Last-Modified` value from the server can be used for the next request.
+
+Clients MUST be able to handle status code 304 in accordance with the rules of `If-Modified-Since`, if they intend to send it.
 
 ### Cross-Origin Resource Sharing (CORS)
 
@@ -215,9 +217,9 @@ Clients SHOULD include `If-Modified-Since` with every request where the the prev
 
 To allow in-browser fmrl clients to make requests to servers, fmrl servers MUST support CORS. CORS is acheived through setting certain headers. You can (and should!) read more about CORS [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS), but everything a server needs to do to be compliant is explained below.
 
-These instructions only applies to the status query, as it is the only API call that clients from other servers in the browser will use.
+These instructions apply to any request that is made with GET. Requests that are for updating data (using PATCH or PUT) SHOULD NOT set up CORS like below, if at all.
 
-The status query path MUST also support OPTIONS. When OPTIONS requests are made, the response is the same every time. Status code 204 with the following headers and no body:
+The GET request path MUST also support OPTIONS. When OPTIONS requests are made, the response is the same every time. Status code 204 with the following headers and no body:
 
 ```
 Access-Control-Allow-Origin: *
@@ -236,13 +238,13 @@ Following these requirements is all that is needed for in-browser clients to wor
 
 ### Status Codes and Errors
 
-Servers may encounter errors when a client sets or gets statuses, and these errors should be able to be communicated back to the user.
+Servers may encounter errors when a client sets or gets data, and these errors should be able to be communicated back to the user.
 
 If the request was successful, servers MUST return 200 or 304.
 
 If there was an error with the client request, the server MUST return a 4xx status code. A server-side error MUST cause 5xx status code to be returned.  For example, servers SHOULD return 405 (Method Not Allowed) for requests using methods not defined in this document.
 
-All other status codes are banned.
+All other status codes are banned and MUST NOT be used.
 
 In the case of any error, plain text (UTF-8) SHOULD be returned that gives a brief explanation of the error. For example:
 
@@ -250,11 +252,34 @@ In the case of any error, plain text (UTF-8) SHOULD be returned that gives a bri
 Image not recognized as JPEG or PNG.
 ```
 
-The client SHOULD then display this error to the user, indicating that something failed. Clients shouldn't expect the error description to be only one line long.
+The client SHOULD then display this error to the user, indicating that something failed. Clients shouldn't expect the error description to be only one line long, or to exist at all.
 
-Some clients may be designed to automatically request status updates in the background. Clients SHOULD stop automatically requesting a user that returns a 4xx status code. Other status codes SHOULD NOT cause this.
+Some clients may be designed to automatically request status updates in the background. Clients SHOULD stop automatically requesting a user that returns a 4xx status code. Other status codes such as 5xx SHOULD NOT cause this.
 
-### Status Query
+### Authentication
+
+APIs that allow updating data on the server must be protected with authentication. To keep things simple, [basic authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization#basic_authentication) is used for each request that changes a user's status data.
+
+Servers MUST return status code 401 for requests that require authentication but don't have it, or if the password is incorrect.
+
+The username in the basic auth header and the username for which a request is being made MUST match.
+
+Clients SHOULD strongly warn users before sending their password over HTTP, as opposed to HTTPS.
+
+Creating an account is handled by each server independently and is not defined here. Servers SHOULD allow users to change their password by proving they have access to another service, like email. This helps keep their account secure if their password is discovered or leaked.
+
+Servers MAY accept "tokens" instead of the actual account password for the user, still using basic auth. A token system allows for each application to have its own token, which can be revoked individually by the user if the application is hacked or misbehaves, or if the token is leaked.
+
+It also allows for tokens with limited scope, for example a token that can only update the media fields. This could be given to a service that tracks what you're listening to and updates your status with it.
+
+
+### Status API
+
+The Status API is made up of three API calls for working with statuses: Status Query, Set Status, and Set Avatar. These are defined below.
+
+Servers and client MUST support the Status API.
+
+#### Status Query
 
 A status query returns data for one or more users.
 
@@ -312,25 +337,7 @@ The `Last-Modified` header MUST be included in the response from the server, and
 
 Since the `code` field exists, servers MUST always return 200 OK, unless no usernames are specified or the URL path is incorrect.
 
-
-### Authentication
-
-APIs that allow updating your status on your server must be protected with authentication. To keep things simple, [basic authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization#basic_authentication) is used for each request that changes a user's status data.
-
-Servers MUST return status code 401 for requests that require authentication but don't have it, or if the password is incorrect.
-
-The username in the basic auth header and the username for which a request is being made MUST match.
-
-Clients SHOULD warn users before sending their password over HTTP, as opposed to HTTPS.
-
-Creating an account is handled by each server independently and is not defined here. Servers SHOULD allow users to change their password by proving they have access to another service, like email. This helps keep their account secure if their password is discovered or leaked.
-
-Servers MAY accept "tokens" instead of the actual account password for the user, still using basic auth. A token system allows for each application to have its own token, which can be revoked individually by the user if the application is hacked or misbehaves, or if the token is leaked.
-
-It also allows for tokens with limited scope, for example a token that can only update the media fields. This could be given to a service that tracks what you're listening to and updates your status with it.
-
-
-### Set Status Field(s)
+#### Set Status Field(s)
 
 This request sets one or more fields of the status. It is a PATCH request. The body of the request is a JSON document of the same schema as the status. The server MUST replace any fields of the user's status with the fields included in the request body. Any fields not included in the request body MUST remain the same. Any fields in the request body that the server doesn't recognize MUST NOT be set in the JSON.
 
@@ -354,7 +361,7 @@ To change the `status` of Bob, the PATCH body would look like:
 
 The only field this doesn't apply to is the `avatar` field. Servers MUST reject requests that try to set the `avatar` field, and clients MUST NOT send them. This is because there's no way to upload the avatar with this kind of request.
 
-### Set Avatar
+#### Set Avatar
 
 To set the avatar for bob, the client makes a PUT request to the following URL:
 
@@ -367,6 +374,50 @@ The body of the PUT request MUST be either a JPEG or PNG image.
 Assuming the image was received and processed correctly, the server MUST return 200, and then MUST set the `original` key of the user JSON so that it points to where this avatar will be served from. This processing MAY include verifying that a valid image file was received, or at least a valid encoding. The server MAY also derive alternate resolutions of the avatar at this point and set those keys as well.
 
 Servers SHOULD limit the request body to 4 MiB, rejecting larger images with code 413. Clients SHOULD NOT try to set avatars with images larger than 4 MiB.
+
+### Following API
+
+The Following API allows the accounts a user follows to be synchronized across clients. This is useful for users that use multiple clients, such as one on their mobile device and one on their desktop.
+
+Clients and servers MAY support this. It's a nice feature, but not a big deal in most cases as users likely won't have a large following list like with traditional social media.
+
+If the client supports the Following API, it can assume the server does not support it if the Get Following API call returns a 4xx error. Clients SHOULD still make the Get Following request every so often in case the server adds the API.
+
+All requests in the Following API MUST be authenticated, as defined in [§Authentication](#authentication).
+
+The Following API is defined in the subsections below.
+
+#### Get Following
+
+This GET request returns all the accounts the user is following. The path for `bob` on `example.com` looks like:
+
+```
+https://example.com/.well-known/fmrl/user/bob/following
+```
+
+The response is a JSON array of global usernames as the body.
+
+```json
+[
+    "@alice@her-server.com",
+    "@test@bigbox.net",
+    "@mallory@wack.cat"
+]
+```
+
+Only global usernames in the format of `@username@example.com` are allowed.
+
+If the server has no information on who the user follows but still supports this API, the response MUST be an empty array: `[]`.
+
+This server MUST follow the rules in [§Headers](#headers) for this API as well, seeing as it's GET. That means the last updated time of the entire follower list as whole must be tracked.
+
+#### Set Following
+
+This is a PUT request of all the accounts the user is now following. It has the same format and URL as [§Get Following](#get-following).
+
+Servers MUST respond with 200 if the JSON was parsed and set properly. The new `Last-Modified` header MUST also be included, which should of course just be the current time.
+
+Clients SHOULD make a Get Following request before making this request, to make sure the following list it has is up to date.
 
 ## Client Status Storage
 
