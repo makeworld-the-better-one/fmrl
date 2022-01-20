@@ -369,7 +369,9 @@ To set the avatar for bob, the client makes a PUT request to the following URL:
 https://example.com/.well-known/fmrl/user/bob/avatar
 ```
 
-The body of the PUT request MUST be either a JPEG or PNG image.
+The body of the PUT request MUST be either a JPEG or PNG image, or empty.
+
+If the body is empty, the server MUST remove any existing avatar image, and remove any avatar keys from the status.
 
 Assuming the image was received and processed correctly, the server MUST return 200, and then MUST set the `original` key of the user JSON so that it points to where this avatar will be served from. This processing MAY include verifying that a valid image file was received, or at least a valid encoding. The server MAY also derive alternate resolutions of the avatar at this point and set those keys as well.
 
