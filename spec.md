@@ -413,11 +413,25 @@ This server MUST follow the rules in [§Headers](#headers) for this API as well,
 
 #### Set Following
 
-This is a PUT request of all the accounts the user is now following. It has the same format and URL as [§Get Following](#get-following).
+This is a PATCH request that adds or removes accounts the user follows from the list. The URL is the same as [§Get Following](#get-following).
 
-Servers MUST respond with 200 if the JSON was parsed and set properly. The new `Last-Modified` header MUST also be included, which should of course just be the current time.
+Here is an example body:
 
-Clients SHOULD make a Get Following request before making this request, to make sure the following list it has is up to date.
+```json
+{
+    "add": [
+        "@newuser@myhost.com"
+    ],
+    "remove": [
+        "@badfriend@bad.io",
+        "@worsefriend@superbad.com"
+    ]
+}
+```
+
+Servers apply these instructions against the following list.
+
+Servers MUST respond with 200 if the JSON was parsed and set properly. The new `Last-Modified` header for the following list MUST also be included, which should of course just be the current time.
 
 ## Client Status Storage
 
