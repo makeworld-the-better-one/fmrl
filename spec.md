@@ -345,7 +345,9 @@ This request sets one or more fields of the status. It is a PATCH request. The b
 
 Servers SHOULD return code 400 with error text if the client body tries to set fields the server doesn't support.
 
-An empty JSON document like `{}` is valid, but of course will do nothing. An empty body is not valid, and servers MUST return an error, like status code 400.
+An empty JSON document like `{}` is valid, but of course will do nothing. It SHOULD NOT update the last modified time of the status.
+
+An empty body is not valid, and servers MUST return an error, like status code 400.
 
 If the server is hosted at `example.com`, the URL to set the status of the user `bob` looks like
 
