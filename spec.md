@@ -21,7 +21,8 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
     - [`media`](#media)
     - [`media_type`](#media_type)
   - [String cleaning](#string-cleaning)
-  - [A note on Unicode](#a-note-on-unicode)
+  - [Unicode Code Points](#unicode-code-points)
+  - [Unicode Normalization](#unicode-normalization)
   - [HTTP API](#http-api)
     - [Headers](#headers)
     - [Cross-Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
@@ -181,11 +182,21 @@ Banned code points:
 - U+0080—U+009F (C1 controls)
 
 
-## A note on Unicode
+## Unicode Code Points
 
 The string limits of fmrl are expressed in Unicode UTF-8 code points. These are not equivalent with bytes, and you must make sure you are counting them correctly.
 
 Counting code points is biased depending on the language, as some languages take more code points to express an idea than others. One possible solution to this would be to count Unicode graphemes instead, but that is also not equal for all languages, and is not a trivial thing to do in many programming languages.
+
+## Unicode Normalization
+
+Sometimes in Unicode there are multiple ways of writing the same grapheme. For example, `é` can be written as `U+00E9`, or `U+0065 U+0301`, which combines `e` with the accent alone: `◌́`.
+
+Unicode has several methods of normalizing these different styles, and the one that reduces the code points used is called NFKC. Applying NFKC normalization to a string will combine code points when possible.
+
+Servers MAY do this to incoming user strings before length validation and storage. Clients MAY do this to user strings before sending them to a server, but SHOULD NOT do it to incoming strings from other users.
+
+It's a nice thing to do if there is a library available and you don't mind increasing your application size somewhat.
 
 ## HTTP API
 
