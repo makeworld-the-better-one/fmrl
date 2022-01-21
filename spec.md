@@ -97,7 +97,11 @@ Missing fields are equivalent to the zero/empty value for the field. For example
 
 Any field can be missing, empty, or null and the user data will still be valid. Therefore, `{}` is a valid status, there just isn't much going on.
 
-Clients MUST support setting and getting all the fields above. Servers MAY choose to not support some, like avatars or emoji. So any of the field-specific requirements below for servers only apply if servers choose to support that field. Servers SHOULD support all fields, however.
+Clients MUST support setting and getting all the fields above.
+
+Servers MAY choose to not support some, like avatars or emoji. So any of the field-specific requirements below for servers only apply if servers choose to support that field. Servers SHOULD support all fields, however.
+
+If a server chooses not to support a field, it MUST silently drop the field, and MUST NOT simply set the field without validation or something similar.
 
 ### `avatar`
 
@@ -386,13 +390,19 @@ To set the avatar for bob, the client makes a PUT request to the following URL:
 https://example.com/.well-known/fmrl/user/bob/avatar
 ```
 
-The body of the PUT request MUST be either a JPEG or PNG image, or empty.
+If the server doesn't support setting the avatar, it SHOULD return 404 to all requests on this kind of path. Clients can use this to inform users that setting their avatar won't work due to lack of server support.
 
-If the body is empty, the server MUST remove any existing avatar image, and remove any avatar keys from the status.
+The body of the PUT request MUST be either a JPEG or PNG image. Empty bodies are invalid.
 
-Assuming the image was received and processed correctly, the server MUST return 200, and then MUST set the `original` key of the user JSON so that it points to where this avatar will be served from. This processing MAY include verifying that a valid image file was received, or at least a valid encoding. The server MAY also derive alternate resolutions of the avatar at this point and set those keys as well.
+Assuming the image was received and processed correctly, the server MUST return 200, and then MUST set the `original` key of the user JSON so that it points to where this avatar will be served from.
+
+This processing MUST include verifying the image is either JPEG or PNG. The server MUST ensure the image dimensions are square as well. If these requirements are too intensive for the server they should not support avatars at all.
+
+The server MAY also derive alternate resolutions of the avatar at this point and set those keys as well.
 
 Servers SHOULD limit the request body to 4 MiB, rejecting larger images with code 413. Clients SHOULD NOT try to set avatars with images larger than 4 MiB.
+
+A DELETE request can also be made, and the server MUST remove any existing avatar image, remove any avatar keys from the status, and return 200.
 
 ### Following API
 
