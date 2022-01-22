@@ -350,7 +350,7 @@ If the client makes the request with an `If-Modified-Since` header, the server M
 
 The client can ensure all (non-error) users will have `data` simply by not including the `If-Modified-Since` header.
 
-The `Last-Modified` header MUST be included in the response from the server, and MUST be set to the most recent updated time out of all the statuses. If none of the requested users can be retrieved successfully (no 200 or 304 codes), then `Last-Modified` must be set to the same value as the `If-Modified-Since` header the client set.
+The `Last-Modified` header MUST be included in the response from the server, and MUST be set to the most recent updated time out of all the statuses. If none of the requested users can be retrieved successfully (no 200 or 304 codes), then `Last-Modified` MUST be set to the same value as the `If-Modified-Since` header the client set.
 
 A request to `/.well-known/fmrl/users` with no `user` query fields is invalid and SHOULD cause code 400 to be returned.
 
