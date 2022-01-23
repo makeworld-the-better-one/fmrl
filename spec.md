@@ -440,6 +440,8 @@ If the server has no information on who the user follows but still supports this
 
 This server MUST follow the rules in [§Headers](#headers) for this API as well, seeing as it's GET. That means the last updated time of the entire follower list as whole must be tracked.
 
+This request path MUST implement CORS, as defined in [§CORS](#cross-origin-resource-sharing-cors), because it is a GET request.
+
 #### Set Following
 
 This is a PATCH request that adds or removes accounts the user follows from the list. The URL is the same as [§Get Following](#get-following).
