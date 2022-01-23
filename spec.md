@@ -410,7 +410,7 @@ The Following API allows the accounts a user follows to be synchronized across c
 
 Clients and servers MAY support this. It's a nice feature, but not a big deal in most cases as users likely won't have a large following list like with traditional social media.
 
-If the client supports the Following API, it can assume the server does not support it if the Get Following API call returns a 4xx error. Clients SHOULD still make the Get Following request every so often in case the server adds the API.
+If the client supports the Following API, it can assume the server does not support it if the Get Following API call returns a 404 error. Clients SHOULD still make the Get Following request every so often in case the server adds the API.
 
 All requests in the Following API MUST be authenticated, as defined in [§Authentication](#authentication).
 
