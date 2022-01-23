@@ -440,7 +440,7 @@ If the server has no information on who the user follows but still supports this
 
 This server MUST follow the rules in [§Headers](#headers) for this API as well, seeing as it's GET. That means the last updated time of the entire follower list as whole must be tracked.
 
-This request path MUST implement CORS, as defined in [§CORS](#cross-origin-resource-sharing-cors), because it is a GET request.
+This request path SHOULD NOT implement CORS, despite being GET, because it is authenticated. The CORS from [§CORS](#cross-origin-resource-sharing-cors) does not work with authenticated requests.
 
 #### Set Following
 
