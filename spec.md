@@ -294,7 +294,9 @@ It also allows for tokens with limited scope, for example a token that can only 
 
 The Status API is made up of three API calls for working with statuses: Status Query, Set Status, and Set Avatar. These are defined below.
 
-Servers and client MUST support the Status API.
+Servers MUST at least support the Status Query. Servers SHOULD support Set Status and Set Avatar, unless they are read-only servers like proxies.
+
+Clients MUST support all of the Status API.
 
 #### Status Query
 
