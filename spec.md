@@ -466,8 +466,6 @@ Either `add` or `remove` or both MUST be set. If both have empty arrays, or eith
 
 Servers MUST respond with 200 if the JSON was parsed and set properly.
 
-The new `Last-Modified` header for the following list MUST also be included, which should of course just be the current time.
-
 ## Client Behavior
 
 This section provides guidelines for how clients should behave.
