@@ -464,6 +464,8 @@ Servers apply these instructions against the following list. Servers MUST check 
 
 Either `add` or `remove` or both MUST be set. If both have empty arrays, or either has a non-array, servers MUST return 400. Clients MUST NOT send those kinds of requests.
 
+Adding usernames that already exist in the following list is a valid request. Same with removing those that are not in the list.
+
 Servers MUST respond with 200 if the JSON was parsed and set properly.
 
 ## Client Behavior
