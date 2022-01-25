@@ -70,6 +70,8 @@ To refer to an fmrl user, their full username must be used. Like email, this inc
 
 The other valid way of doing this is: `fmrl:username@example.com`. Note the leading `@` is dropped. This is a URI, so this can be used to link to fmrl users in Web pages or other hyperlinked media. fmrl clients can then choose to support opening these kinds of URIs, to display the user's status, and/or ask if you'd like to follow them.
 
+Domains in global usernames MUST be punycoded. So the domain name `bücher.tld` would be represented as `xn--bcher-kva.tld`.
+
 Clients MUST accept these kinds of strings for following or viewing users, and MUST NOT accept other methods.
 
 ## User Data or Status
