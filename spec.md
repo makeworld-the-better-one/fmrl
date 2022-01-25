@@ -462,6 +462,8 @@ Here is an example body:
 
 Servers apply these instructions against the following list. Servers MUST check that all strings are valid global usernames of the type `@username@server.tld` and MUST return code 400 if not.
 
+Either `add` or `remove` or both MUST be set. If both have empty arrays, or either has a non-array, servers MUST return 400. Clients MUST NOT send those kinds of requests.
+
 Servers MUST respond with 200 if the JSON was parsed and set properly.
 
 The new `Last-Modified` header for the following list MUST also be included, which should of course just be the current time.
