@@ -113,14 +113,14 @@ Other valid keys in the `avatar` dictionary provide lower resolution versions of
 {
     "avatar": {
         "original": "/path/to/avatar.jpeg",
-        "48x48": "/path/to/avatar-48",
-        "360x360": "/path/to/avatar-large2.png"
+        "48": "/path/to/avatar-48",
+        "360": "/path/to/avatar-large2.png"
     },
     ...
 }
 ```
 
-Other keys MUST be in the format of `NxN`, where `N` is the width and height of the image in pixels.
+Other keys MUST be in the format of `N`, where `N` is the width and height of the image in pixels.
 
 Clients MUST NOT rely on any keys other than `original` existing however.
 
