@@ -190,7 +190,7 @@ Banned code points:
 
 The string length limits of fmrl are expressed in Unicode UTF-8 code points. These are not equivalent with bytes, and you must make sure you are counting them correctly.
 
-Counting code points is biased depending on the language, but much less biased than counting bytes. Anotehr option would be to count Unicode graphemes instead, but that is also not equal for all languages, and is not a trivial thing to do in many programming languages. So counting code points is accepted as a "good enough" medium solution for length limits.
+Counting code points is biased depending on the language, but much less biased than counting bytes. Another option would be to count Unicode graphemes instead, but that is also not equal for all languages, and is not a trivial thing to do in many programming languages. So counting code points is accepted as a "good enough" medium solution for length limits.
 
 ## Unicode Normalization
 
