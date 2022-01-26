@@ -93,11 +93,11 @@ In lieu of a proper JSON schema, here is an example layout of the data, with eve
 }
 ```
 
-Any fields that do not appear here have an undefined meaning and purpose and SHOULD be ignored by clients.
+Any fields that do not appear here have an undefined meaning and purpose and SHOULD be ignored by clients and servers.
 
 Missing fields are equivalent to the zero/empty value for the field. For example, having no `"status"` field is equivalent to `"status": ""`. The same goes for the JSON `null` value, it is equivalent to an empty string, or number zero, etc.
 
-Any field can be missing, empty, or null and the user data will still be valid. Therefore, `{}` is a valid status, there just isn't much going on.
+Any field can be missing, empty, or null and the user data will still be valid. Therefore, `{}` is a valid status, just with no meaningful data.
 
 Clients MUST support setting and getting all the fields above.
 
@@ -130,7 +130,7 @@ Note that the value for all these keys is an absolute path that uses the same do
 
 Clients MUST NOT rely on entries in the dictionary ending with a file extension. The only valid way to determine the image is JPEG or PNG, if required, is by the magic number in the first few bytes of the file.
 
-Servers MUST change all avatar strings when the avatar image changes. The only valid way for clients to know if the avatar has changed is to compare the avatar string to previously cached one. If the avatar *path* must stay the same for simplicity, the server can simply add a query string like `/avatar.png?341` that will be ignored by the server. This still changes the avatar *string*, so it works. Previous avatar strings SHOULD NOT be reused within a reasonable length of time for a client to be open without updating, perhaps 30 minutes, so that clients are aware of all avatar updates. Not reusing also works fine.
+Servers MUST change all avatar strings when the avatar image changes. The only valid way for clients to know if the avatar has changed is to compare the avatar string to previously cached one. If the avatar *path* must stay the same for simplicity, the server can simply add a query string like `/avatar.png?341` that will be ignored by the server. This still changes the avatar *string*, so it works. Previous avatar strings SHOULD NOT be reused within a reasonable length of time for a client to be open without updating, perhaps 30 minutes, so that clients are aware of all avatar updates. Not reusing is also valid.
 
 ### `name`
 
@@ -148,7 +148,7 @@ Servers MUST limit this to 100 UTF-8 code points, returning code 400 to clients 
 
 A single [fully-qualified](https://www.unicode.org/reports/tr51/#def_qualified_emoji_character) emoji, as defined by Unicode.
 
-Servers MUST validate this. Clients MUST validate this, both when setting and getting statuses.
+Servers MUST validate this. Clients MUST validate this when setting statuses, and SHOULD when getting statuses.
 
 The only way to validate emojis is to compare them to a list of all emojis. A list of all valid emojis with code points can be found [here](https://unicode.org/Public/emoji/14.0/emoji-test.txt). Note the emoji version number in the URL, that can be changed to find the new file as new versions are released. Also note that list contains emojis that are not fully-qualified.
 
@@ -160,16 +160,15 @@ Servers MUST limit this to 100 UTF-8 code points, returning code 400 to clients 
 
 ### `media_type`
 
-The kind of media the `media` string defines. This can be used to display an icon beside the `media` string.
+The kind of media the `media` string defines. This can be used to display an icon or word beside the `media` string.
 
 Registered types of media:
 
 1. Text (book, article, etc)
-2. Movie
-3. TV Show
-4. Music
-5. Speech (podcast, radio program, etc)
-6. Game (video game, board game, card game, etc)
+2. Video (movie, TV show, video essay)
+3. Music
+4. Speech (podcast, radio program)
+5. Game (video game, board game, card game)
 
 Number 0 means the media type is not specified by the user. Perhaps no icon should be displayed.
 
@@ -177,7 +176,7 @@ Servers MUST return code 400 to clients that try to set a `media_type` value out
 
 ## String cleaning
 
-Certain characters are banned in user data strings. Servers MUST reject attempts to set data strings that contain these characters, and clients MUST NOT upload data strings that contain these characters. Clients MAY strip out these characters when user attempts to upload them, instead of returning an error to the user. Clients MUST strip these out from statuses it downloads.
+Certain characters are banned in user data strings. Servers MUST reject attempts to set data strings that contain these characters, and clients MUST NOT upload data strings that contain these characters. Clients MAY strip out these characters when user attempts to upload them, instead of returning an error to the user. Clients SHOULD strip these out from statuses it downloads.
 
 Characters that are banned are those that attempt to control presentation and/or spacing. This are the ASCII and Unicode control characters. Note that this includes commonplace characters like TAB (U+0009) and LINE FEED (U+000A).
 
@@ -187,12 +186,11 @@ Banned code points:
 - U+007F DELETE
 - U+0080—U+009F (C1 controls)
 
-
 ## Unicode Code Points
 
-The string limits of fmrl are expressed in Unicode UTF-8 code points. These are not equivalent with bytes, and you must make sure you are counting them correctly.
+The string length limits of fmrl are expressed in Unicode UTF-8 code points. These are not equivalent with bytes, and you must make sure you are counting them correctly.
 
-Counting code points is biased depending on the language, as some languages take more code points to express an idea than others. One possible solution to this would be to count Unicode graphemes instead, but that is also not equal for all languages, and is not a trivial thing to do in many programming languages.
+Counting code points is biased depending on the language, but much less biased than counting bytes. Anotehr option would be to count Unicode graphemes instead, but that is also not equal for all languages, and is not a trivial thing to do in many programming languages. So counting code points is accepted as a "good enough" medium solution for length limits.
 
 ## Unicode Normalization
 
@@ -211,8 +209,6 @@ The only officially defined API for fmrl is the one defined in this document, th
 Servers and clients MUST support HTTP/1.1, and MAY support later versions such as HTTP/2 or HTTP/3.
 
 Clients MUST support HTTP and HTTPS, supporting at least TLS 1.2. Servers MUST support TLS 1.2 at least. Servers SHOULD only serve HTTPS, but serving unsecure HTTP is allowed.
-
-Clients SHOULD try HTTPS first, then HTTP if it fails, to prevent downgrade attacks.
 
 Clients MUST NOT send request URLs longer than 2048 bytes. Servers MAY support URLs longer than this, and shouldn't need to add code that discriminates against longer URLs.
 
@@ -238,7 +234,7 @@ Clients MUST be able to handle status code 304 in accordance with the rules of `
 
 To allow in-browser fmrl clients to make requests to servers, fmrl servers MUST support CORS. CORS is acheived through setting certain headers. You can (and should!) read more about CORS [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS), but everything a server needs to do to be compliant is explained below.
 
-These instructions apply to any request that is made with GET. Requests that are for updating data (using PATCH or PUT) SHOULD NOT set up CORS like below, if at all.
+These instructions apply to any non-authenticated request that is made with GET. Requests that are for updating data (using PATCH or PUT) SHOULD NOT set up CORS like below, if at all.
 
 The GET request path MUST also support OPTIONS. When OPTIONS requests are made, the response is the same every time. Status code 204 with the following headers and no body:
 
@@ -298,7 +294,7 @@ The Status API is made up of three API calls for working with statuses: Status Q
 
 Servers MUST at least support the Status Query. Servers SHOULD support Set Status and Set Avatar, unless they are read-only servers like proxies.
 
-Clients MUST support all of the Status API.
+Clients MAY support whatever parts of the status API that are relevant to the purpose of the client.
 
 #### Status Query
 
@@ -362,11 +358,9 @@ Since the `code` field exists, servers MUST always return 200 OK, unless no user
 
 #### Set Status Field(s)
 
-This request sets one or more fields of the status. It is a PATCH request. The body of the request is a JSON document of the same schema as the status. The server MUST replace any fields of the user's status with the fields included in the request body. Any fields not included in the request body MUST remain the same. Any fields in the request body that the server doesn't recognize MUST NOT be set in the JSON.
+This request sets one or more fields of the status. It is a PATCH request. The body of the request is a JSON document of the same schema as the status. The server MUST replace any fields of the user's status with the fields included in the request body. Any fields not included in the request body, or those set to `null`, MUST remain the same. Any fields in the request body that the server doesn't recognize MUST NOT be set in the JSON.
 
-Servers SHOULD return code 400 with error text if the client body tries to set fields the server doesn't support.
-
-An empty JSON document like `{}` is valid, but of course will do nothing. It SHOULD NOT update the last modified time of the status.
+An empty JSON document like `{}` is valid, but will change nothing. It SHOULD NOT update the last modified time of the status.
 
 An empty body is not valid, and servers MUST return an error, like status code 400.
 
@@ -406,7 +400,7 @@ The server MAY also derive alternate resolutions of the avatar at this point and
 
 Servers SHOULD limit the request body to 4 MiB, rejecting larger images with code 413. Clients SHOULD NOT try to set avatars with images larger than 4 MiB.
 
-A DELETE request can also be made, and the server MUST remove any existing avatar image, remove any avatar keys from the status, and return 200.
+A DELETE request can also be made, with no body, and the server MUST remove any existing avatar image, remove any avatar keys from the status, and return 200.
 
 ### Following API
 
@@ -486,7 +480,7 @@ Clients MUST NOT keep previous statuses for users after receiving an update.
 
 Some clients may be designed to automatically request status updates in the background. Clients SHOULD stop automatically requesting a user that returns a 4xx status code. Other status codes such as 5xx SHOULD NOT cause this. The client MAY check the 4xx user again after some longer interval, such as when the application is re-opened.
 
-If the client automatically retrieve statuses, it SHOULD also retrieve the status of the user using the client regularly, possibly more regularly than other statuses.. This is because there may be other clients running that have changed that user's status.
+If the client automatically retrieve statuses, it SHOULD also retrieve the status of the user using the client regularly, possibly more regularly than other statuses. This is because there may be other clients running that have changed that user's status.
 
 For clients that support it, automatic retrieval of the following list SHOULD also happen.
 
