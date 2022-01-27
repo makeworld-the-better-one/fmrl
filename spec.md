@@ -20,6 +20,7 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
     - [`emoji`](#emoji)
     - [`media`](#media)
     - [`media_type`](#media_type)
+    - [`uri`](#uri)
   - [String cleaning](#string-cleaning)
   - [Unicode Code Points](#unicode-code-points)
   - [Unicode Normalization](#unicode-normalization)
@@ -39,6 +40,7 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
     - [Status Storage](#status-storage)
     - [Automatic Retrieval of Statuses](#automatic-retrieval-of-statuses)
     - [Manual Update](#manual-update)
+    - [`uri` field](#uri-field)
   - [Server Behavior](#server-behavior)
 
 
@@ -89,7 +91,8 @@ In lieu of a proper JSON schema, here is an example layout of the data, with eve
     "status": "Just grooving",
     "emoji": "🤓",
     "media": "Lord of The Rings",
-    "media_type": 2
+    "media_type": 2,
+    "uri": "https://www.youtube.com/watch?v=iik25wqIuFo"
 }
 ```
 
@@ -173,6 +176,23 @@ Registered types of media:
 Number 0 means the media type is not specified by the user. Perhaps no icon should be displayed.
 
 Servers MUST return code 400 to clients that try to set a `media_type` value outside of the range above.
+
+### `uri`
+
+A valid URI. This can be used to augment other parts of the status, for example by linking to the music the user is listening to.
+
+Some examples:
+
+```
+https://example.com
+gemini://geminispace.info/
+magnet:?xt=urn:btih:c12fe1c06bba254a9dc9f519b335aa7c1367a88a
+fmrl:username@server
+```
+
+Servers MUST validate that this field is a valid URI. Clients MUST validate this when setting statuses, and SHOULD when getting statuses.
+
+Servers MUST limit this to 512 bytes, returning code 400 to clients that try to set a longer one. Clients MUST NOT attempt to set a longer `uri`. Clients SHOULD NOT display any received `uri` that is longer.
 
 ## String cleaning
 
@@ -321,7 +341,8 @@ Here is an example output:
             "status": "Just grooving",
             "emoji": "🤓",
             "media": "Lord of The Rings",
-            "media_type": 2
+            "media_type": 2,
+            "uri": "https://myhomepage.com"
         }
     },
     {
@@ -488,6 +509,12 @@ For clients that support it, automatic retrieval of the following list SHOULD al
 
 If the user clicks some sort of manual update or "refresh" button, that SHOULD update: the statuses of the accounts the user follows, the user's status, and the following list of the user.
 
+
+### `uri` field
+
+Clients SHOULD NOT automatically make a request to the URI in the `uri` field of a user's status, to prevent tracking of users.
+
+Clients SHOULD hand the URI off to the user's OS when the user clicks it, so the default application can open it correctly. Web browser, mail client, torrent client, etc.
 
 ## Server Behavior
 
