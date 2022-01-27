@@ -1,6 +1,6 @@
 # Specification
 
-v0.0.0 (versioning coming soon)
+v0.1.0, January 27th 2022
 
 **This is a draft version of the spec, and is subject to change.**
 
