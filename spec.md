@@ -1,6 +1,6 @@
 # Specification
 
-v0.1.0, January 27th 2022
+v0.1.1, January 27th 2022
 
 **This is a draft version of the spec, and is subject to change.**
 
@@ -194,6 +194,8 @@ fmrl:username@server
 Servers MUST validate that this field is a valid URI. Clients MUST validate this when setting statuses, and SHOULD when getting statuses.
 
 Servers MUST limit this to 512 bytes, returning code 400 to clients that try to set a longer one. Clients MUST NOT attempt to set a longer `uri`. Clients SHOULD NOT display any received `uri` that is longer.
+
+In addition to URI validation, this field MUST NOT contain whitespace, and MUST contain a colon. This prevents just inserting text like `hello world`, which is apparently a valid URI.
 
 ## String cleaning
 
