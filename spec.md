@@ -9,7 +9,7 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
 ## Table of Contents
 - [Specification](#specification)
   - [Table of Contents](#table-of-contents)
-  - [Preamble](#preamble)
+  - [Conventions Used in This Document](#conventions-used-in-this-document)
   - [Terminology](#terminology)
   - [Usernames](#usernames)
   - [Global Usernames](#global-usernames)
@@ -29,6 +29,7 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
     - [Cross-Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
     - [Status Codes and Errors](#status-codes-and-errors)
     - [Authentication](#authentication)
+  - [robots.txt](#robotstxt)
     - [Status API](#status-api)
       - [Status Query](#status-query)
       - [Set Status Field(s)](#set-status-fields)
@@ -44,7 +45,7 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
   - [Server Behavior](#server-behavior)
 
 
-## Preamble
+## Conventions Used in This Document
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [BCP 14](https://tools.ietf.org/html/bcp14) [[RFC2119](https://tools.ietf.org/html/rfc2119)] [[RFC8174](https://tools.ietf.org/html/rfc8174)] when, and only when, they appear in all capitals, as shown here.
 
@@ -307,6 +308,26 @@ Servers MAY accept "tokens" instead of the actual account password for the user,
 
 It also allows for tokens with limited scope, for example a token that can only update the media fields. This could be given to a service that tracks what you're listening to and updates your status with it.
 
+
+## robots.txt
+
+[robots.txt](https://en.wikipedia.org/wiki/Robots_exclusion_standard) is a standard to tell automated crawlers and other Web bots what they should not access. It is hosted at `/robots.txt`.
+
+To prevent crawlers such as Google from indexing fmrl content, keeping it ephemeral, servers SHOULD add the following lines to their `robots.txt`:
+
+```
+User-agent: *
+Disallow: /.well-known/fmrl/
+```
+
+If your file already contains `User-agent: *`, you can just add it to the bottom of that section, like:
+
+```
+User-agent: *
+Disallow: /php-admin/
+Disallow: /secretstuff/
+Disallow: /.well-known/fmrl/
+```
 
 ### Status API
 
