@@ -10,7 +10,9 @@ Enter fmrl. Pronounced like the word ephemeral, it is a decentralized protocol t
 
 As of January 2022:
 
-I am developing the reference server implementation, and updating the spec as I encounter issues. The spec will be versioned after that is done. A few other developers are working on their own server and client implementations. These will be linked here once the spec is versioned.
+v0.1.0 of the spec has been released. It will recieve updates as needed, but developers should consider a sign to go full steam ahead on anything they want to develop.
+
+I am developing the reference server implementation. A few other developers are working on their own server and client implementations. Any and all of these will be linked here once they are publicly available.
 
 ## Branding
 
@@ -22,13 +24,13 @@ Please style the name as fmrl or if necessary, FMRL. Never Fmrl.
 - No history, just the current message
 - No paragraphs, just a statement
 
-## Software
-
-Coming soon! If you implement any software let me know. Please make it clear in your project README what version of the spec your software supports.
-
 ## Specification
 
 Please see the [Specification](./spec.md).
+
+## Software
+
+Coming soon! If you implement any software let me know. Please make it clear in your project README what version of the spec your software supports.
 
 ## FAQ
 
