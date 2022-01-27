@@ -346,7 +346,7 @@ A status query returns data for one or more users.
 The client makes a GET request that looks like this:
 
 ```
-https://example.com/.well-known/fmrl/users?user=username1&user=username2
+https://example.com/.well-known/fmrl/users?user=bob&user=alice&user=example
 ```
 
 Here is an example output:
@@ -371,7 +371,7 @@ Here is an example output:
     {
         "username": "alice",
         "code": 404,
-        "msg": "User not found",
+        "msg": "User not found"
     },
     {
         "username": "example",
