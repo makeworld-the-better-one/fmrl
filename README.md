@@ -30,7 +30,16 @@ Please see the [Specification](./spec.md).
 
 ## Software
 
-Coming soon! If you implement any software let me know. Please make it clear in your project README what version of the spec your software supports.
+### Servers
+
+- [whatsup](https://github.com/makeworld-the-better-one/whatsup), the reference implementation
+
+
+### Clients
+
+Coming soon!
+
+If you implement any software let me know. Please make it clear in your project README what version of the spec your software supports.
 
 ## FAQ
 
