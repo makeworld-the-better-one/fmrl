@@ -29,7 +29,7 @@ Feedback on any part of this is extremely welcome, please create a GitHub issue,
     - [Cross-Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
     - [Status Codes and Errors](#status-codes-and-errors)
     - [Authentication](#authentication)
-  - [robots.txt](#robotstxt)
+    - [robots.txt](#robotstxt)
     - [Status API](#status-api)
       - [Status Query](#status-query)
       - [Set Status Field(s)](#set-status-fields)
@@ -311,7 +311,7 @@ Servers MAY accept "tokens" instead of the actual account password for the user,
 It also allows for tokens with limited scope, for example a token that can only update the media fields. This could be given to a service that tracks what you're listening to and updates your status with it.
 
 
-## robots.txt
+### robots.txt
 
 [robots.txt](https://en.wikipedia.org/wiki/Robots_exclusion_standard) is a standard to tell automated crawlers and other Web bots what they should not access. It is hosted at `/robots.txt`.
 
