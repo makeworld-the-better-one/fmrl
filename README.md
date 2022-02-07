@@ -32,7 +32,8 @@ Please see the [Specification](./spec.md).
 
 ### Servers
 
-- [whatsup](https://github.com/makeworld-the-better-one/whatsup), the reference implementation
+- [whatsup](https://github.com/makeworld-the-better-one/whatsup), the reference implementation (Go)
+- [flashpaper](https://github.com/ethosrot/flashpaper), Python
 
 
 ### Clients
